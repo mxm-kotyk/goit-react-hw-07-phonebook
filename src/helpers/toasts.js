@@ -47,7 +47,7 @@ const warningToastParms = {
 
 export const errorToast = error => {
   toast.error(
-    `Ooops somethink went wrong. Server says: ${error.data}`,
+    `Ooops somethink went wrong. Server says: ${error}`,
     errorToastParams
   );
 };

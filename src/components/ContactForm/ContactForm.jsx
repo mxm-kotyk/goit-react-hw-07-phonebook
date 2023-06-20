@@ -11,11 +11,10 @@ import {
   ErrorText,
   AddButton,
 } from './ContactForm.styled';
-import {
-  useAddContactMutation,
-  useGetAllContactsQuery,
-} from 'redux/contactsApi';
 import { errorToast, successAddToast, warningToast } from 'helpers/toasts';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectContacts, selectError, selectIsAdding } from 'redux/selectors';
+import { addContact } from 'redux/thunks';
 
 const validationSchema = yup.object({
   name: yup
@@ -35,8 +34,12 @@ const validationSchema = yup.object({
 });
 
 export const ContactForm = () => {
-  const [addContact, { error, isLoading }] = useAddContactMutation();
-  const { data: contacts } = useGetAllContactsQuery();
+  // const [addContact, { error, isLoading }] = useAddContactMutation();
+  // const { data: contacts } = useGetAllContactsQuery();
+  const contacts = useSelector(selectContacts);
+  const isAdding = useSelector(selectIsAdding);
+  const error = useSelector(selectError);
+  const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: { name: '', number: '' },
@@ -44,7 +47,7 @@ export const ContactForm = () => {
     validationSchema,
   });
 
-  const handleSubmit = async (name, number) => {
+  const handleSubmit = (name, number) => {
     formik.resetForm();
 
     if (contacts.some(contact => contact.name.includes(name))) {
@@ -53,15 +56,8 @@ export const ContactForm = () => {
     }
 
     const contactData = { name, number };
-    await addContact(contactData);
-
-    if (error) {
-      errorToast(error);
-    }
-
-    if (!error) {
-      successAddToast(name);
-    }
+    dispatch(addContact(contactData));
+    error ? errorToast(error) : successAddToast(name);
   };
 
   const nameInputId = uniqid();
@@ -103,8 +99,8 @@ export const ContactForm = () => {
             <ErrorText>{formik.errors.number}</ErrorText>
           )}
         </FieldWrapper>
-        <AddButton type="submit" disabled={isLoading}>
-          {isLoading ? (
+        <AddButton type="submit" disabled={isAdding}>
+          {isAdding ? (
             <Ring size={40} lineWeight={5} speed={2} color="white" />
           ) : (
             'Add contact'
