@@ -44,6 +44,7 @@ export const Contact = ({ id, name, number }) => {
         type="button"
         onClick={() => handleDelete(id)}
         title="Delete Contact"
+        disabled={isDeleting}
       >
         <ContactIcon width="24" height="24">
           {isDeleting ? (

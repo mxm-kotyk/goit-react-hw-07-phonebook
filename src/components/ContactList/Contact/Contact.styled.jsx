@@ -69,6 +69,10 @@ export const DeleteButton = styled.button`
   cursor: pointer;
   transition: background 200ms ease;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   &:focus-visible {
     background: #ff7906;
   }

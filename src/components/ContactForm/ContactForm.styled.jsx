@@ -111,6 +111,10 @@ export const AddButton = styled.button`
   cursor: pointer;
   transition: all 150ms ease;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   &:focus-visible {
     background: #6998aa;
   }
